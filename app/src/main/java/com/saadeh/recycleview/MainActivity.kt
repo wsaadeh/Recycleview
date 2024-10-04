@@ -1,10 +1,13 @@
 package com.saadeh.recycleview
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.saadeh.recycleview.databinding.ActivityMainBinding
 
@@ -30,6 +33,23 @@ class MainActivity : AppCompatActivity() {
         binding.rvList.layoutManager = LinearLayoutManager(this)
             //.apply { orientation = LinearLayoutManager.HORIZONTAL }
         adapter.submitList(contacts)
+
+        binding.ivGrid.setOnClickListener(){
+            binding.rvList.layoutManager = GridLayoutManager(this,2)
+        }
+
+        binding.ivList.setOnClickListener(){
+            binding.rvList.layoutManager = LinearLayoutManager(this)
+        }
+
+        adapter.setOnClickListener { contact ->
+            val intent = Intent(this, ContactDetailActivity::class.java)
+            intent.putExtra("name",contact.name)
+            intent.putExtra("phone", contact.phone)
+            intent.putExtra("icon", contact.icon)
+            startActivity(intent)
+            Log.d("Wilson",contact.toString())
+        }
     }
 }
 

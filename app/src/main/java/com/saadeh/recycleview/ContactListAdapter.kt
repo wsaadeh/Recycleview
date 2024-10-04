@@ -12,7 +12,10 @@ import androidx.recyclerview.widget.RecyclerView
 //Adaptação entre o data class e o item_list layout
 class ContactListAdapter :
     ListAdapter<Contact, ContactListAdapter.ContactViewHolder>(ContactDiffUtils()) {
-//Criar um view holder
+
+    private lateinit var onClickListener: (Contact) -> Unit
+
+    //Criar um view holder
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_list, parent, false)
         return ContactViewHolder(view)
@@ -21,19 +24,27 @@ class ContactListAdapter :
     //bind - atrelar o dado com a UI views
     override fun onBindViewHolder(holder: ContactViewHolder, position: Int) {
         val contact = getItem(position)
-        holder.bind(contact)
+        holder.bind(contact, onClickListener)
+    }
+
+    fun setOnClickListener(onClick: (Contact) -> Unit) {
+        onClickListener = onClick
     }
 
     //view holder = view que segura os dados
-    class ContactViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class ContactViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
         private val tvName = view.findViewById<TextView>(R.id.tv_Name)
         private val tvPhone = view.findViewById<TextView>(R.id.tv_phone)
         private val Image = view.findViewById<ImageView>(R.id.imageView)
 
-        fun bind(contact: Contact){
+        fun bind(contact: Contact, onClick: (Contact) -> Unit) {
             tvName.text = contact.name
             tvPhone.text = contact.phone
             Image.setImageResource(contact.icon)
+
+            view.setOnClickListener(){
+                onClick.invoke(contact)
+            }
         }
     }
 
